@@ -42,7 +42,7 @@ namespace Scope
         public List<float> data3 = new List<float>();
         public int selectID0 = 0, selectID1 = 0, selectID2 = 0, selectID3 = 0;
         public int x, y;
-        float zoom = 1;
+        float zoomx = 1,zoomy=1;
         bool enAutorun = false, enmove = false;
         public bool enGo = false;
         int clickx, clicky, lastx, lasty;
@@ -78,9 +78,9 @@ namespace Scope
                     hScrollBar1.Value = lastx + clickx - e.X;
                 if (goy < vScrollBar1.Maximum && goy > 0)
                     vScrollBar1.Value = lasty + clicky - e.Y;
-
+                Invalidate();
             }
-            //Invalidate();
+
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
@@ -90,14 +90,24 @@ namespace Scope
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == 'w' && zoom > 0.1)
+            if (e.KeyChar == 'w' && zoomy > 0.1)
             {
-                zoom -= 0.1f;
+                zoomy -= 0.1f;
                 Invalidate();
             }
-            if (e.KeyChar == 's' && zoom < 10)
+            if (e.KeyChar == 's' && zoomy < 10)
             {
-                zoom += 0.1f;
+                zoomy += 0.1f;
+                Invalidate();
+            }
+            if (e.KeyChar == 'd' && zoomx > 0.1)
+            {
+                zoomx -= 0.1f;
+                Invalidate();
+            }
+            if (e.KeyChar == 'a' && zoomx < 10)
+            {
+                zoomx += 0.1f;
                 Invalidate();
             }
             if (e.KeyChar == 'p')
@@ -108,16 +118,15 @@ namespace Scope
         float count = 0;
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //float n = 100 * (float)Math.Sin(count) + 200;
-            //data.Add(n);
-            //n = 100 * (float)Math.Sin(count + Math.PI / 2f) + 200;
-            //data1.Add(n);
-            //n = 100 * (float)Math.Sin(count + Math.PI) + 200;
-            //data2.Add(n);
-            //n = 100 * (float)Math.Sin(count + Math.PI * 3f / 2f) + 200;
-            //data3.Add(n);
-            //count += 0.2f;
-            Add_data();
+            float n = 100 * (float)Math.Sin(count) + 100*0;
+            data.Add(n);
+            n = 100 * (float)Math.Sin(count + Math.PI / 2f) + 100*0;
+            data1.Add(n);
+            n = 100 * (float)Math.Sin(count + Math.PI) + 100*0;
+            data2.Add(n);
+            n = 100 * (float)Math.Sin(count + Math.PI * 3f / 2f) +100*0;
+            data3.Add(n);
+            count += 0.2f;
             Invalidate();
         }
 
@@ -178,9 +187,9 @@ namespace Scope
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            float time = (x + hScrollBar1.Value + 1 - StartPrint) / Unit_length * zoom, num = (((y + 1) / zoom + 7 + (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f) - Height) / -Unit_length) * 10f + 10;
+            float time = (x + hScrollBar1.Value + 1 - StartPrint) / Unit_length * zoomx, num = (((y + 1) / zoomy + 7 + (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f) - Height) / -Unit_length) * 10f + 10;
             GraphicsPath gp = new GraphicsPath();
-            int st = (int)(0.1 * hScrollBar1.Value * zoom);
+            int st = (int)(0.1 * hScrollBar1.Value * zoomx);
             //if((int)(StartPrint + ((data.Count - 1) * Unit_length - 1) / zoom)>)
 
             for (int i = 0; i <= this.Width / Unit_length; i++)
@@ -188,7 +197,7 @@ namespace Scope
                 if (i % 5 == 0)
                 {
                     e.Graphics.DrawLine(TablePen2, StartPrint + i * Unit_length, StartPrint, StartPrint + i * Unit_length, StartPrint + Height);//画线
-                    gp.AddString(((int)(0.1 * (i * (int)(Unit_length) + hScrollBar1.Value) * zoom)).ToString("F1"), this.Font.FontFamily, (int)FontStyle.Regular, 12, new RectangleF(StartPrint + i * Unit_length - 7, Height - StartPrint - 60, 400, 50), null);//添加文字
+                    gp.AddString(((int)(0.1 * (i * (int)(Unit_length) + hScrollBar1.Value) * zoomx)).ToString("F1"), this.Font.FontFamily, (int)FontStyle.Regular, 12, new RectangleF(StartPrint + i * Unit_length - 7, Height - StartPrint - 60, 400, 50), null);//添加文字
                 }
                 else
                     e.Graphics.DrawLine(TablePen, StartPrint + i * Unit_length, StartPrint, StartPrint + i * Unit_length, StartPrint + Height);//画线
@@ -199,7 +208,7 @@ namespace Scope
                 if ((int)(Height / Unit_length - i) % 3 == 0)
                 {
                     e.Graphics.DrawLine(TablePen2, StartPrint, (i + 1) * Unit_length, Width, (i + 1) * Unit_length);//画线
-                    gp.AddString((((Height / Unit_length - i) * Unit_length - (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f) - 7) * zoom - 1).ToString("F1"), this.Font.FontFamily, (int)FontStyle.Regular, 14, new RectangleF(0, (i + 1) * Unit_length - 8, 400, 50), null);//添加文字
+                    gp.AddString((((Height / Unit_length - i) * Unit_length - (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f) - 7) * zoomy - 1).ToString("F1"), this.Font.FontFamily, (int)FontStyle.Regular, 14, new RectangleF(0, (i + 1) * Unit_length - 8, 400, 50), null);//添加文字
                 }
                 else
                     e.Graphics.DrawLine(TablePen, StartPrint, (i + 1) * Unit_length, Width, (i + 1) * Unit_length);//画线
@@ -210,35 +219,35 @@ namespace Scope
             //e.Graphics.DrawLine(TablePen3, x, 0, x, Height);//画线
             //e.Graphics.DrawLine(TablePen3, 0, y, Width, y);//画线
             if (st < 0) st = 0;
-            int ys = 0;
             if (data.Count > 1)
             {
-                hScrollBar1.Maximum = (int)(StartPrint + ((data.Count - 1) * Unit_length - 1) / zoom);
-                int max = vScrollBar1.Maximum - (int)(((float)vScrollBar1.Maximum - ((int)Maxdata() / 10.0) * Unit_length + 2) / zoom + vScrollBar1.Maximum * (1 - 1 / zoom) - vScrollBar1.Maximum * 0.25f);
+                hScrollBar1.Maximum = (int)(StartPrint + ((data.Count - 1) * Unit_length - 1) / zoomx);
+                int max = vScrollBar1.Maximum - (int)(((float)vScrollBar1.Maximum - ((int)Maxdata() / 10.0) * Unit_length + 2) / zoomy + vScrollBar1.Maximum * (1 - 1 / zoomy) - vScrollBar1.Maximum * 0.25f);
                 if (max > vScrollBar1.Maximum) vScrollBar1.Maximum = max;
+                if (vScrollBar1.Maximum- vScrollBar1.Value < 100) vScrollBar1.Maximum += 200;
                 //ys = vScrollBar1.Maximum - (int)(((data[data.Count - 1] / 10.0) * Unit_length + 2) / zoom + Height * (1 - 1 / zoom)) + 10;
             }
             for (int i = 0; st + 1 + i < data.Count - 1; i++)//绘制
             {
                 if (checkLine_0.Checked)
                 {
-                    e.Graphics.FillRectangle(Brushes.Red, new Rectangle((int)(StartPrint + (i * Unit_length - 1) / zoom), (int)(((float)Height - ((int)data[st + i] / 10.0) * Unit_length + 2) / zoom + Height * (1 - 1 / zoom)) - (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), 3, 3));
-                    e.Graphics.DrawLine(LinesPen, StartPrint + (i * Unit_length - 1) / zoom, (float)((float)Height - ((int)data[st + i] / 10.0) * Unit_length + 4) / zoom + Height * (1 - 1 / zoom) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), StartPrint + ((i + 1) * Unit_length - 1) / zoom, (float)(Height - ((int)data[st + 1 + i] / 10.0) * Unit_length + 4) / zoom + Height * (1 - 1 / zoom) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f));
+                    //e.Graphics.FillRectangle(Brushes.Red, new Rectangle((int)(StartPrint + (i * Unit_length - 1) / zoomx), (int)(((float)Height - ((int)data[st + i] / 10.0) * Unit_length + 2) / zoomy + Height * (1 - 1 / zoomy)) - (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), 3, 3));
+                    e.Graphics.DrawLine(LinesPen, StartPrint + (i * Unit_length - 1) / zoomx, (float)((float)Height - ((int)data[st + i] / 10.0) * Unit_length + 4) / zoomy + Height * (1 - 1 / zoomy) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), StartPrint + ((i + 1) * Unit_length - 1) / zoomx, (float)(Height - ((int)data[st + 1 + i] / 10.0) * Unit_length + 4) / zoomy + Height * (1 - 1 / zoomy) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f));
                 }
                 if (checkLine_1.Checked)
                 {
-                    e.Graphics.FillRectangle(Brushes.Green, new Rectangle((int)(StartPrint + (i * Unit_length - 1) / zoom), (int)(((float)Height - ((int)data1[st + i] / 10.0) * Unit_length + 2) / zoom + Height * (1 - 1 / zoom)) - (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), 3, 3));
-                    e.Graphics.DrawLine(LinesPen1, StartPrint + (i * Unit_length - 1) / zoom, (float)((float)Height - ((int)data1[st + i] / 10.0) * Unit_length + 4) / zoom + Height * (1 - 1 / zoom) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), StartPrint + ((i + 1) * Unit_length - 1) / zoom, (float)(Height - ((int)data1[st + 1 + i] / 10.0) * Unit_length + 4) / zoom + Height * (1 - 1 / zoom) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f));
+                    //e.Graphics.FillRectangle(Brushes.Green, new Rectangle((int)(StartPrint + (i * Unit_length - 1) / zoomx), (int)(((float)Height - ((int)data1[st + i] / 10.0) * Unit_length + 2) / zoomy + Height * (1 - 1 / zoomy)) - (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), 3, 3));
+                    e.Graphics.DrawLine(LinesPen1, StartPrint + (i * Unit_length - 1) / zoomx, (float)((float)Height - ((int)data1[st + i] / 10.0) * Unit_length + 4) / zoomy + Height * (1 - 1 / zoomy) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), StartPrint + ((i + 1) * Unit_length - 1) / zoomx, (float)(Height - ((int)data1[st + 1 + i] / 10.0) * Unit_length + 4) / zoomy + Height * (1 - 1 / zoomy) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f));
                 }
                 if (checkLine_2.Checked)
                 {
-                    e.Graphics.FillRectangle(Brushes.Blue, new Rectangle((int)(StartPrint + (i * Unit_length - 1) / zoom), (int)(((float)Height - ((int)data2[st + i] / 10.0) * Unit_length + 2) / zoom + Height * (1 - 1 / zoom)) - (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), 3, 3));
-                    e.Graphics.DrawLine(LinesPen2, StartPrint + (i * Unit_length - 1) / zoom, (float)((float)Height - ((int)data2[st + i] / 10.0) * Unit_length + 4) / zoom + Height * (1 - 1 / zoom) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), StartPrint + ((i + 1) * Unit_length - 1) / zoom, (float)(Height - ((int)data2[st + 1 + i] / 10.0) * Unit_length + 4) / zoom + Height * (1 - 1 / zoom) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f));
+                   // e.Graphics.FillRectangle(Brushes.Blue, new Rectangle((int)(StartPrint + (i * Unit_length - 1) / zoomx), (int)(((float)Height - ((int)data2[st + i] / 10.0) * Unit_length + 2) / zoomy + Height * (1 - 1 / zoomy)) - (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), 3, 3));
+                    e.Graphics.DrawLine(LinesPen2, StartPrint + (i * Unit_length - 1) / zoomx, (float)((float)Height - ((int)data2[st + i] / 10.0) * Unit_length + 4) / zoomy + Height * (1 - 1 / zoomy) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), StartPrint + ((i + 1) * Unit_length - 1) / zoomx, (float)(Height - ((int)data2[st + 1 + i] / 10.0) * Unit_length + 4) / zoomy + Height * (1 - 1 / zoomy) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f));
                 }
                 if (checkLine_3.Checked)
                 {
-                    e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle((int)(StartPrint + (i * Unit_length - 1) / zoom), (int)(((float)Height - ((int)data3[st + i] / 10.0) * Unit_length + 2) / zoom + Height * (1 - 1 / zoom)) - (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), 3, 3));
-                    e.Graphics.DrawLine(LinesPen3, StartPrint + (i * Unit_length - 1) / zoom, (float)((float)Height - ((int)data3[st + i] / 10.0) * Unit_length + 4) / zoom + Height * (1 - 1 / zoom) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), StartPrint + ((i + 1) * Unit_length - 1) / zoom, (float)(Height - ((int)data3[st + 1 + i] / 10.0) * Unit_length + 4) / zoom + Height * (1 - 1 / zoom) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f));
+                    //e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle((int)(StartPrint + (i * Unit_length - 1) / zoomx), (int)(((float)Height - ((int)data3[st + i] / 10.0) * Unit_length + 2) / zoomy + Height * (1 - 1 / zoomy)) - (int)(vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), 3, 3));
+                    e.Graphics.DrawLine(LinesPen3, StartPrint + (i * Unit_length - 1) / zoomx, (float)((float)Height - ((int)data3[st + i] / 10.0) * Unit_length + 4) / zoomy + Height * (1 - 1 / zoomy) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f), StartPrint + ((i + 1) * Unit_length - 1) / zoomx, (float)(Height - ((int)data3[st + 1 + i] / 10.0) * Unit_length + 4) / zoomy + Height * (1 - 1 / zoomy) - (vScrollBar1.Value - vScrollBar1.Maximum * 0.75f));
                 }
             }
             if (enAutorun)
